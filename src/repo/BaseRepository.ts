@@ -1,10 +1,9 @@
-import { HonoAppType } from '../types';
 
 export abstract class BaseRepository<T> {
   protected bucket: R2Bucket;
 
-  constructor(c: HonoAppType['Bindings']) {
-    this.bucket = c.MY_BUCKET;
+  constructor(bucket: R2Bucket) {
+    this.bucket = bucket;
   }
 
   protected abstract getKey(item: T): string;

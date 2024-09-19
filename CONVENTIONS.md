@@ -1,0 +1,2 @@
+- Use bun package manager
+- Use types everywhere possible.
