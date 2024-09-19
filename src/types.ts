@@ -26,6 +26,7 @@ export type User = {
   name: string;
   email: string;
   role: string;
+  secret?: string;
   refreshToken?: string;
   currentlyAuthenticating?: boolean;
   isActivated: boolean;

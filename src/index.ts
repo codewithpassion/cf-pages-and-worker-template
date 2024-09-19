@@ -11,7 +11,7 @@ import auth from './auth'
 
 const app = new Hono<HonoAppType>()
 
-totp.options = { digits: 6 }
+totp.options = { digits: 6, step: 60 * 5 }
 
 const requiredEnvVars = [
   'JWT_SECRET',
