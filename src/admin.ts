@@ -1,18 +1,15 @@
 import { Context, Hono } from 'hono'
-import { jwt } from 'hono/jwt'
 import { HonoAppType, User, Project } from './types'
 import { UsersRepo } from './repo/Users'
 import { Projects } from './repo/Projects'
+import { jwtMiddleware } from './middleware'
+import { omit } from 'lodash'
 
 const admin = new Hono<HonoAppType>()
 
-// JWT authentication middleware
-const jwtAuth = jwt({
-  secret: 'your-secret-key',  // Replace with a secure secret key
-})
 
 // Apply JWT authentication to all routes
-admin.use('*', jwtAuth)
+admin.use('*', jwtMiddleware)
 
 // Create repositories
 const createRepositories = (c: Context<HonoAppType>) => ({
@@ -24,16 +21,24 @@ const createRepositories = (c: Context<HonoAppType>) => ({
 admin.post('/users', async (c) => {
   const user: User = await c.req.json()
   const { users } = createRepositories(c)
+  user.id = user.email;
   await users.create(user)
   return c.json({ message: 'User created', user }, 201)
 })
 
+admin.get('/users', async (c) => {
+  const { users } = createRepositories(c)
+  const allUsers = (await users.list()).map(u => omit(u, ['secret', 'currentlyAuthenticating', 'refreshToken']))
+  return c.json({ message: 'Users retrieved', users: allUsers })
+});
+
 admin.get('/users/:email', async (c) => {
   const email = c.req.param('email')
+  console.log('email', email)
   const { users } = createRepositories(c)
-  const user = await users.read(email)
+  const user = await users.findByEamil(email)
   if (!user) return c.json({ message: 'User not found' }, 404)
-  return c.json({ message: 'User retrieved', user })
+  return c.json({ message: 'User retrieved', user: omit(user, ['secret', 'currentlyAuthenticating', 'refreshToken']) })
 })
 
 admin.put('/users/:email', async (c) => {
@@ -58,6 +63,13 @@ admin.post('/projects', async (c) => {
   const { projects } = createRepositories(c)
   await projects.create(project)
   return c.json({ message: 'Project created', project }, 201)
+})
+
+// Get all projects
+admin.get('/projects', async (c) => {
+  const { projects } = createRepositories(c)
+  const allProjects = await projects.list()
+  return c.json({ message: 'Projects retrieved', projects: allProjects })
 })
 
 admin.get('/projects/:name', async (c) => {
