@@ -13,8 +13,11 @@
       "jest"
     ],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
     "esModuleInterop": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "test/**/*.ts",
+  ]
 }

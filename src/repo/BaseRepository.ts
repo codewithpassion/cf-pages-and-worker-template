@@ -9,9 +9,13 @@ export class BaseRepository<T extends { id: string }> {
     this.bucket = bucket;
   }
 
+  protected getDefaults(): T[] {
+    return [];
+  }
+
   private async getData(): Promise<T[]> {
     const object = await this.bucket.get(this.key);
-    if (!object) return [];
+    if (!object) return this.getDefaults();
     const text = await object.text();
     return JSON.parse(text);
   }
@@ -40,7 +44,7 @@ export class BaseRepository<T extends { id: string }> {
     const data = await this.getData();
     const index = data.findIndex(item => item.id === id);
     if (index === -1) return null;
-    
+
     data[index] = { ...data[index], ...updatedItem };
     await this.saveData(data);
     return data[index];
@@ -50,7 +54,7 @@ export class BaseRepository<T extends { id: string }> {
     const data = await this.getData();
     const filteredData = data.filter(item => item.id !== id);
     if (filteredData.length === data.length) return false;
-    
+
     await this.saveData(filteredData);
     return true;
   }
@@ -58,7 +62,7 @@ export class BaseRepository<T extends { id: string }> {
   async create_update(item: T): Promise<T> {
     const data = await this.getData();
     const index = data.findIndex(existingItem => existingItem.id === item.id);
-    
+
     if (index === -1) {
       // Item doesn't exist, create new
       data.push(item);
@@ -66,7 +70,7 @@ export class BaseRepository<T extends { id: string }> {
       // Item exists, update it
       data[index] = { ...data[index], ...item };
     }
-    
+
     await this.saveData(data);
     return item;
   }

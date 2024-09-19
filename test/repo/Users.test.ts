@@ -1,4 +1,5 @@
-import { Users } from '../../src/repo/Users';
+import { nanoid } from 'nanoid';
+import { UsersRepo } from '../../src/repo/Users';
 import { User } from '../../src/types';
 import { R2Bucket } from '@cloudflare/workers-types';
 
@@ -9,10 +10,12 @@ const mockR2Bucket = {
 } as unknown as R2Bucket;
 
 describe('Users Repository', () => {
-  let usersRepo: Users;
+  let usersRepo: UsersRepo;
+  let otpMasterSecret: string;
 
   beforeEach(() => {
-    usersRepo = new Users(mockR2Bucket);
+    otpMasterSecret = nanoid(5);
+    usersRepo = new UsersRepo(mockR2Bucket, otpMasterSecret);
     jest.clearAllMocks();
   });
 
@@ -22,7 +25,7 @@ describe('Users Repository', () => {
       text: jest.fn().mockResolvedValue(JSON.stringify(mockData)),
     });
 
-    const newUser: User = { id: '1', name: 'John Doe', email: 'john@example.com' };
+    const newUser: User = { id: '1', name: 'John Doe', email: 'john@example.com', role: 'user', isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     await usersRepo.create(newUser);
 
     expect(mockR2Bucket.put).toHaveBeenCalledWith('users.json', JSON.stringify([newUser]));
@@ -30,39 +33,39 @@ describe('Users Repository', () => {
 
   test('read should return a user by id', async () => {
     const mockData: User[] = [
-      { id: '1', name: 'John Doe', email: 'john@example.com' },
-      { id: '2', name: 'Jane Doe', email: 'jane@example.com' }
+      { id: '1', name: 'John Doe', email: 'john@example.com', role: 'user', isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '2', name: 'Jane Doe', email: 'jane@example.com', role: 'user', isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
     ];
     mockR2Bucket.get.mockResolvedValue({
       text: jest.fn().mockResolvedValue(JSON.stringify(mockData)),
     });
 
     const result = await usersRepo.read('2');
-    expect(result).toEqual({ id: '2', name: 'Jane Doe', email: 'jane@example.com' });
+    expect(result).toEqual({ id: '2', name: 'Jane Doe', email: 'jane@example.com', role: 'user', isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
   });
 
   test('update should modify an existing user', async () => {
     const mockData: User[] = [
-      { id: '1', name: 'John Doe', email: 'john@example.com' },
-      { id: '2', name: 'Jane Doe', email: 'jane@example.com' }
+      { id: '1', name: 'John Doe', email: 'john@example.com', role: 'user', isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '2', name: 'Jane Doe', email: 'jane@example.com', role: 'user', isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
     ];
     mockR2Bucket.get.mockResolvedValue({
       text: jest.fn().mockResolvedValue(JSON.stringify(mockData)),
     });
 
-    const updatedUser: User = { id: '2', name: 'Jane Smith', email: 'jane@example.com' };
+    const updatedUser: User = { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user',  isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     await usersRepo.update('2', updatedUser);
 
     expect(mockR2Bucket.put).toHaveBeenCalledWith('users.json', JSON.stringify([
-      { id: '1', name: 'John Doe', email: 'john@example.com' },
-      { id: '2', name: 'Jane Smith', email: 'jane@example.com' }
+      { id: '1', name: 'John Doe', email: 'john@example.com', role: 'user',  isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user',  isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
     ]));
   });
 
   test('delete should remove a user', async () => {
     const mockData: User[] = [
-      { id: '1', name: 'John Doe', email: 'john@example.com' },
-      { id: '2', name: 'Jane Doe', email: 'jane@example.com' }
+      { id: '1', name: 'John Doe', email: 'john@example.com', role: 'user',  isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '2', name: 'Jane Doe', email: 'jane@example.com', role: 'user',  isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
     ];
     mockR2Bucket.get.mockResolvedValue({
       text: jest.fn().mockResolvedValue(JSON.stringify(mockData)),
@@ -71,7 +74,7 @@ describe('Users Repository', () => {
     await usersRepo.delete('1');
 
     expect(mockR2Bucket.put).toHaveBeenCalledWith('users.json', JSON.stringify([
-      { id: '2', name: 'Jane Doe', email: 'jane@example.com' }
+      { id: '2', name: 'Jane Doe', email: 'jane@example.com', role: 'user',  isActivated: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
     ]));
   });
 });

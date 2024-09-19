@@ -1,6 +1,13 @@
 name = "heimdall"
 compatibility_date = "2024-09-19"
-compatibility_flags = [ "nodejs_compat" ]
+compatibility_flags = [ "nodejs_compat_v2" ]
+
+[vars]
+BUN_VERSION = "1.1.20"
+
+[[r2_buckets]]
+binding = "HEIMDALL_BUCKET"
+bucket_name = "heimdall-dev"
 
 [env.dev]
 [[env.dev.r2_buckets]]

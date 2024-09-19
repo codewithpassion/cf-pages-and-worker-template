@@ -1,13 +1,22 @@
-import { Hono } from 'hono'
+import { Context, Hono } from 'hono'
+import { jwt } from 'hono/jwt'
 import { HonoAppType, User, Project } from './types'
-import { Users } from './repo/Users'
+import { UsersRepo } from './repo/Users'
 import { Projects } from './repo/Projects'
 
 const admin = new Hono<HonoAppType>()
 
+// JWT authentication middleware
+const jwtAuth = jwt({
+  secret: 'your-secret-key',  // Replace with a secure secret key
+})
+
+// Apply JWT authentication to all routes
+admin.use('*', jwtAuth)
+
 // Create repositories
-const createRepositories = (c: HonoAppType['Context']) => ({
-  users: new Users(c.env.HEIMDALL_BUCKET),
+const createRepositories = (c: Context<HonoAppType>) => ({
+  users: new UsersRepo(c.env.HEIMDALL_BUCKET),
   projects: new Projects(c.env.HEIMDALL_BUCKET)
 })
 
@@ -30,8 +39,9 @@ admin.get('/users/:email', async (c) => {
 admin.put('/users/:email', async (c) => {
   const email = c.req.param('email')
   const updatedUser: User = await c.req.json()
+  updatedUser.email = email;
   const { users } = createRepositories(c)
-  await users.update(updatedUser)
+  await users.update(updatedUser.id, updatedUser)
   return c.json({ message: 'User updated', user: updatedUser })
 })
 
@@ -62,7 +72,7 @@ admin.put('/projects/:name', async (c) => {
   const name = c.req.param('name')
   const updatedProject: Project = await c.req.json()
   const { projects } = createRepositories(c)
-  await projects.update(updatedProject)
+  await projects.update(updatedProject.id, updatedProject)
   return c.json({ message: 'Project updated', project: updatedProject })
 })
 
