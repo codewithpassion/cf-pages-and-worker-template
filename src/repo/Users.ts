@@ -3,7 +3,7 @@ import { BaseRepository } from './BaseRepository';
 
 export class Users extends BaseRepository<User> {
   constructor(bucket: R2Bucket) {
-    super(bucket, 'users');
+    super('users.json', bucket,);
   }
 
   protected getItemKey(user: User): string {

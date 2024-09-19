@@ -1,45 +1,74 @@
+import { R2Bucket } from '@cloudflare/workers-types';
 
-export abstract class BaseRepository<T> {
-  protected bucket: R2Bucket;
-  protected objectKey: string;
+export class BaseRepository<T extends { id: string }> {
+  private key: string;
+  private bucket: R2Bucket;
 
-  constructor(bucket: R2Bucket, objectKey: string) {
+  constructor(key: string, bucket: R2Bucket) {
+    this.key = key;
     this.bucket = bucket;
-    this.objectKey = objectKey;
   }
 
-  protected abstract getItemKey(item: T): string;
-
-  async create(item: T): Promise<void> {
-    const key = `${this.objectKey}:${this.getItemKey(item)}`;
-    await this.bucket.put(key, JSON.stringify(item));
+  private async getData(): Promise<T[]> {
+    const object = await this.bucket.get(this.key);
+    if (!object) return [];
+    const text = await object.text();
+    return JSON.parse(text);
   }
 
-  async read(itemKey: string): Promise<T | null> {
-    const key = `${this.objectKey}:${itemKey}`;
-    const object = await this.bucket.get(key);
-    if (!object) return null;
-    const data = await object.json();
-    return data as T;
-  }
-
-  async update(item: T): Promise<void> {
-    const key = `${this.objectKey}:${this.getItemKey(item)}`;
-    await this.bucket.put(key, JSON.stringify(item));
-  }
-
-  async delete(itemKey: string): Promise<void> {
-    const key = `${this.objectKey}:${itemKey}`;
-    await this.bucket.delete(key);
+  private async saveData(data: T[]): Promise<void> {
+    await this.bucket.put(this.key, JSON.stringify(data));
   }
 
   async list(): Promise<T[]> {
-    const list = await this.bucket.list({ prefix: `${this.objectKey}:` });
-    const items: T[] = [];
-    for (const object of list.objects) {
-      const item = await this.read(object.key.split(':')[1]);
-      if (item) items.push(item);
+    return this.getData();
+  }
+
+  async create(item: T): Promise<T> {
+    const data = await this.getData();
+    data.push(item);
+    await this.saveData(data);
+    return item;
+  }
+
+  async read(id: string): Promise<T | null> {
+    const data = await this.getData();
+    return data.find(item => item.id === id) || null;
+  }
+
+  async update(id: string, updatedItem: Partial<T>): Promise<T | null> {
+    const data = await this.getData();
+    const index = data.findIndex(item => item.id === id);
+    if (index === -1) return null;
+    
+    data[index] = { ...data[index], ...updatedItem };
+    await this.saveData(data);
+    return data[index];
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const data = await this.getData();
+    const filteredData = data.filter(item => item.id !== id);
+    if (filteredData.length === data.length) return false;
+    
+    await this.saveData(filteredData);
+    return true;
+  }
+
+  async create_update(item: T): Promise<T> {
+    const data = await this.getData();
+    const index = data.findIndex(existingItem => existingItem.id === item.id);
+    
+    if (index === -1) {
+      // Item doesn't exist, create new
+      data.push(item);
+    } else {
+      // Item exists, update it
+      data[index] = { ...data[index], ...item };
     }
-    return items;
+    
+    await this.saveData(data);
+    return item;
   }
 }
+
