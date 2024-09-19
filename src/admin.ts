@@ -16,7 +16,7 @@ admin.post('/users', async (c) => {
 admin.get('/users/:email', async (c) => {
   const email = c.req.param('email')
   const userRepo = new UserRepository(c.env.HEIMDALL_BUCKET)
-  const user = await userRepo.read(`user:${email}`)
+  const user = await userRepo.read(email)
   if (!user) return c.json({ message: 'User not found' }, 404)
   return c.json({ message: 'User retrieved', user })
 })
@@ -32,7 +32,7 @@ admin.put('/users/:email', async (c) => {
 admin.delete('/users/:email', async (c) => {
   const email = c.req.param('email')
   const userRepo = new UserRepository(c.env.HEIMDALL_BUCKET)
-  await userRepo.delete(`user:${email}`)
+  await userRepo.delete(email)
   return c.json({ message: 'User deleted', email })
 })
 
@@ -47,7 +47,7 @@ admin.post('/projects', async (c) => {
 admin.get('/projects/:name', async (c) => {
   const name = c.req.param('name')
   const projectRepo = new ProjectRepository(c.env.HEIMDALL_BUCKET)
-  const project = await projectRepo.read(`project:${name}`)
+  const project = await projectRepo.read(name)
   if (!project) return c.json({ message: 'Project not found' }, 404)
   return c.json({ message: 'Project retrieved', project })
 })
@@ -63,7 +63,7 @@ admin.put('/projects/:name', async (c) => {
 admin.delete('/projects/:name', async (c) => {
   const name = c.req.param('name')
   const projectRepo = new ProjectRepository(c.env.HEIMDALL_BUCKET)
-  await projectRepo.delete(`project:${name}`)
+  await projectRepo.delete(name)
   return c.json({ message: 'Project deleted', name })
 })
 

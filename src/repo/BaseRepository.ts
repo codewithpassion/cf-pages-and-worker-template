@@ -1,19 +1,22 @@
 
 export abstract class BaseRepository<T> {
   protected bucket: R2Bucket;
+  protected objectKey: string;
 
-  constructor(bucket: R2Bucket) {
+  constructor(bucket: R2Bucket, objectKey: string) {
     this.bucket = bucket;
+    this.objectKey = objectKey;
   }
 
-  protected abstract getKey(item: T): string;
+  protected abstract getItemKey(item: T): string;
 
   async create(item: T): Promise<void> {
-    const key = this.getKey(item);
+    const key = `${this.objectKey}:${this.getItemKey(item)}`;
     await this.bucket.put(key, JSON.stringify(item));
   }
 
-  async read(key: string): Promise<T | null> {
+  async read(itemKey: string): Promise<T | null> {
+    const key = `${this.objectKey}:${itemKey}`;
     const object = await this.bucket.get(key);
     if (!object) return null;
     const data = await object.json();
@@ -21,19 +24,20 @@ export abstract class BaseRepository<T> {
   }
 
   async update(item: T): Promise<void> {
-    const key = this.getKey(item);
+    const key = `${this.objectKey}:${this.getItemKey(item)}`;
     await this.bucket.put(key, JSON.stringify(item));
   }
 
-  async delete(key: string): Promise<void> {
+  async delete(itemKey: string): Promise<void> {
+    const key = `${this.objectKey}:${itemKey}`;
     await this.bucket.delete(key);
   }
 
   async list(): Promise<T[]> {
-    const list = await this.bucket.list();
+    const list = await this.bucket.list({ prefix: `${this.objectKey}:` });
     const items: T[] = [];
     for (const object of list.objects) {
-      const item = await this.read(object.key);
+      const item = await this.read(object.key.split(':')[1]);
       if (item) items.push(item);
     }
     return items;
