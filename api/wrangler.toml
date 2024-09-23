@@ -12,10 +12,6 @@ routes = [
 	{ pattern = "api.heimdall.rockyshoreslabs.io", custom_domain = true },
 ]
 
-
-[vars]
-BUN_VERSION = "1.1.20"
-
 [[r2_buckets]]
 binding = "HEIMDALL_BUCKET"
 bucket_name = "heimdall-dev"
