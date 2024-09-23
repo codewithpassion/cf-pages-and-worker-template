@@ -3,7 +3,7 @@ name = "heimdall"
 pages_build_output_dir = "frontend/dist/"
 compatibility_date = "2024-08-09"
 
-[env.staging]
+[env.preview]
 API_URL = "https://api.dev.heimdall.rockyshoreslabs.io"
 
 [env.production]
