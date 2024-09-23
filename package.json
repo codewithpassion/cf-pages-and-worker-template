@@ -1,0 +1,19 @@
+{
+  "type": "module",
+  "name": "@portcityai/heimdall",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "api"
+  ],
+  "scripts": {
+    "dev": "concurrently \"bun run dev:api\" \"bun run dev:frontend\"",
+    "dev:api": "cd api && bun run dev",
+    "dev:frontend": "cd frontend && bun run dev"
+  },
+  "devDependencies": {
+    "bun": "^1.1.29",
+    "concurrently": "^9.0.1"
+  }
+}

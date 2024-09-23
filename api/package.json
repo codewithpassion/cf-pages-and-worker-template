@@ -1,5 +1,5 @@
 {
-  "name": "heimdall",
+  "name": "@portcityai/heimdall-api",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",

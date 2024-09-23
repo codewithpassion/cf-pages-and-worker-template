@@ -38,6 +38,11 @@ app.use(envVerificationMiddleware)
 app.route("/admin", admin)
 app.route("/auth", auth)
 
+
+app.get("/open", async (c) => {
+  return c.json({ message: "Hello World" });
+});
+
 app.get("/secured", jwtMiddleware, async (c) => {
   console.log("payload", c.var.jwtPayload);
   return c.json({ message: "Secured endpoint" });
