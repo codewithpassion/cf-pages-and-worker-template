@@ -3,7 +3,9 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "deploy:staging": "wrangler deploy -e staging",
+    "deploy:production": "wrangler deploy -e production"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.16.0",
