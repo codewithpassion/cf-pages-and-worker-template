@@ -1,6 +1,17 @@
-name = "heimdall"
+name = "heimdall-api"
 compatibility_date = "2024-09-19"
 compatibility_flags = [ "nodejs_compat_v2" ]
+
+[env.staging]
+routes = [
+	{ pattern = "api.dev.heimdall.rockyshoreslabs.io", custom_domain = true },
+]
+
+[env.production]
+routes = [
+	{ pattern = "api.heimdall.rockyshoreslabs.io", custom_domain = true },
+]
+
 
 [vars]
 BUN_VERSION = "1.1.20"
