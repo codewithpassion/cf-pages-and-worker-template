@@ -7,13 +7,13 @@ compatibility_date = "2024-08-09"
 [vars]
 BUN_VERSION = "1.1.20"
 
-[env.preview]
-routes = [
-    { pattern = "dev.heimdall.rockyshoreslabs.io", custom_domain = true }
-]
+# [env.preview]
+# routes = [
+#     { pattern = "dev.heimdall.rockyshoreslabs.io", custom_domain = true }
+# ]
 
-# Production environment
-[env.production]
-routes = [
-    { pattern = "heimdall.rockyshoreslabs.io", custom_domain = true }
-]
+# # Production environment
+# [env.production]
+# routes = [
+#     { pattern = "heimdall.rockyshoreslabs.io", custom_domain = true }
+# ]
