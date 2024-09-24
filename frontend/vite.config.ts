@@ -8,9 +8,12 @@ import { imagetools } from 'vite-imagetools';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_')
   console.error("@@@@@@@@@@@@@@@@@@", env, mode)
+  if (!env.VITE_API_URL) {
+    throw new Error('VITE_API_URL is required as a secret');
+  }
   return {
     define: {
-      'import.meta.env.VITE_API_URL': JSON.stringify(env.API_URL),
+      'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL),
     },
     server: {
       proxy: {
