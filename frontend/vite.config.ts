@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
   console.error("@@@@@@@@@@@@@@@@@@", env, mode)
   return {
     define: {
-      'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL),
+      'import.meta.env.VITE_API_URL': JSON.stringify(env.API_URL),
     },
     server: {
       proxy: {
