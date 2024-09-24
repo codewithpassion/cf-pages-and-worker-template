@@ -1,4 +1,5 @@
 import { Hono, } from 'hono'
+import { cors } from 'hono/cors';
 import { HonoAppType } from './types'
 import { admin } from './admin'
 import { createMiddleware } from 'hono/factory'
@@ -30,6 +31,14 @@ const envVerificationMiddleware = createMiddleware(async (c, next) => {
 app.use(secretsMiddleware)
 app.use(emailSenderMiddleware)
 app.use(envVerificationMiddleware)
+app.use('*', async (c, next) => {
+  const corsMiddleware = cors({
+    origin: "*", //[c.env.CORS_ORIGIN, c.env.API_ENV === 'local' ? 'http://localhost:5173' : ''],
+    allowMethods: ['POST', 'OPTIONS'],
+    credentials: false,
+  });
+  return corsMiddleware(c, next);
+});
 
 app.route("/admin", admin)
 app.route("/auth", auth)
