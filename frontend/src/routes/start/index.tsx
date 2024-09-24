@@ -1,6 +1,7 @@
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import { API_ENDPOINT } from "@/data/constants";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export const Component = function Start(props: DashboardProps): JSX.Element {
   const { className, ...other } = props;
@@ -25,6 +26,7 @@ export const Component = function Start(props: DashboardProps): JSX.Element {
         className={`w-full flex flex-col container md:flex-row relative mx-auto pt-10`}
       >
         <Button onClick={() => fetchData()}>Click me</Button>
+        <Link to="/dashboard">Dashboard</Link>
       </div>
       {data && (
         <div

@@ -1,8 +1,8 @@
 /* SPDX-FileCopyrightText: 2024-present Codewithpassion */
 /* SPDX-License-Identifier: MIT */
 
-import { Fragment, Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Fragment, Suspense } from "react";
+import { Outlet } from "react-router-dom";
 
 /**
  * The main application layout.
@@ -36,13 +36,10 @@ export function BaseLayout(): JSX.Element {
 
             {/* Header section with logo and navbar */}
             <header className="relative z-10 w-full px-10 pt-10 flex items-start min-h-[30vh] ">
-              <div className='w-50 h-50 -ml-4 -mt-6'>
-                {/* <Logo /> */}
-              </div>
-              <div className='flex-grow'></div>
+              <div className="w-50 h-50 -ml-4 -mt-6">{/* <Logo /> */}</div>
+              <div className="flex-grow"></div>
               {/* <NavBar /> */}
             </header>
-
           </div>
           {/* Main content area */}
           <main className="flex-1">
@@ -51,9 +48,17 @@ export function BaseLayout(): JSX.Element {
             </div>
           </main>
         </div>
-
       </Suspense>
+    </Fragment>
+  );
+}
 
+export function BlankLayout(): JSX.Element {
+  return (
+    <Fragment>
+      <Suspense>
+        <Outlet />
+      </Suspense>
     </Fragment>
   );
 }
@@ -69,13 +74,10 @@ export function LandingPageLayout(): JSX.Element {
 
             {/* Header section with logo and navbar */}
             <header className="relative z-10 w-full px-10 pt-10 flex items-start min-h-[30vh] ">
-              <div className='w-50 h-50 -ml-4 -mt-6'>
-                {/* <Logo /> */}
-              </div>
-              <div className='flex-grow'></div>
+              <div className="w-50 h-50 -ml-4 -mt-6">{/* <Logo /> */}</div>
+              <div className="flex-grow"></div>
               {/* <NavBar /> */}
             </header>
-
           </div>
           {/* Main content area */}
           <main className="flex-1 flex flex-col container relative mx-auto">
@@ -85,7 +87,6 @@ export function LandingPageLayout(): JSX.Element {
           </main>
         </div>
       </Suspense>
-
     </Fragment>
   );
 }

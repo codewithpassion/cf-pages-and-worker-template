@@ -7,8 +7,7 @@ import { imagetools } from 'vite-imagetools';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_')
-  console.error("@@@@@@@@@@@@@@@@@@", env, mode)
-  if (!env.VITE_API_URL) {
+  if (mode !== "development" && !env.VITE_API_URL) {
     throw new Error('VITE_API_URL is required as a secret');
   }
   return {

@@ -2,6 +2,7 @@ import { createElement } from "react";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import {
   BaseLayout,
+  BlankLayout,
   LandingPageLayout,
   MainLayout,
   RootError,
@@ -29,6 +30,14 @@ export const router = createHashRouter([
     element: <LandingPageLayout />,
     errorElement: <RootError />,
     children: [],
+  },
+  {
+    path: "",
+    element: <BlankLayout />,
+    errorElement: <RootError />,
+    children: [
+      { index: false, path: "dashboard", lazy: () => import("./dashboard") },
+    ],
   },
 ]);
 
