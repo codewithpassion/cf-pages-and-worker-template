@@ -10,7 +10,7 @@ bucket_name = "heimdall-dev"
 
 [env.staging]
 routes = [
-	{ pattern = "api.staging].heimdall.rockyshoreslabs.io", custom_domain = true },
+	{ pattern = "api.staging.heimdall.rockyshoreslabs.io", custom_domain = true },
 ]
 
 [[env.staging.r2_buckets]]
