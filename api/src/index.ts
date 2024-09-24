@@ -1,12 +1,8 @@
 import { Hono, } from 'hono'
-import { HTTPException } from 'hono/http-exception'
-import { jwt, sign } from 'hono/jwt'
-import { HonoAppType, User } from './types'
+import { HonoAppType } from './types'
 import { admin } from './admin'
-import { UsersRepo } from './repo/Users'
 import { createMiddleware } from 'hono/factory'
 import { totp } from 'otplib'
-import { EmailSender } from './email/sender'
 import auth from './auth'
 import { emailSenderMiddleware, jwtMiddleware, secretsMiddleware } from './middleware'
 
