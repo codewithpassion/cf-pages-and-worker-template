@@ -7,6 +7,7 @@ import {
   MainLayout,
   RootError,
 } from "../components";
+import { DashboardLayout, InventoryPage } from "@/components/dashboard.layout";
 
 /**
  * Application routes
@@ -14,31 +15,47 @@ import {
  */
 export const router = createHashRouter([
   {
-    path: "",
-    element: <BaseLayout />,
-    errorElement: <RootError />,
-    children: [],
-  },
-  {
-    path: "",
-    element: <MainLayout />,
-    errorElement: <RootError />,
-    children: [{ index: true, lazy: () => import("./start") }],
-  },
-  {
-    path: "",
-    element: <LandingPageLayout />,
-    errorElement: <RootError />,
-    children: [],
-  },
-  {
-    path: "",
-    element: <BlankLayout />,
+    path: "/",
+    element: <DashboardLayout />,
     errorElement: <RootError />,
     children: [
-      { index: false, path: "dashboard", lazy: () => import("./dashboard") },
+      {
+        index: true,
+        element: <InventoryPage />,
+      },
+      {
+        path: "inventory",
+        element: <InventoryPage />,
+      },
+      // Add more routes for other pages (orders, products, customers, analytics)
     ],
   },
+  // {
+  //   path: "",
+  //   element: <BaseLayout />,
+  //   errorElement: <RootError />,
+  //   children: [],
+  // },
+  // {
+  //   path: "",
+  //   element: <MainLayout />,
+  //   errorElement: <RootError />,
+  //   children: [{ index: true, lazy: () => import("./start") }],
+  // },
+  // {
+  //   path: "",
+  //   element: <LandingPageLayout />,
+  //   errorElement: <RootError />,
+  //   children: [],
+  // },
+  // {
+  //   path: "",
+  //   element: <BlankLayout />,
+  //   errorElement: <RootError />,
+  //   children: [
+  //     { index: false, path: "dashboard", lazy: () => import("./dashboard") },
+  //   ],
+  // },
 ]);
 
 export function Router(): JSX.Element {
