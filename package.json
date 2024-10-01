@@ -10,7 +10,9 @@
   "scripts": {
     "dev": "concurrently \"bun run dev:api\" \"bun run dev:frontend\"",
     "dev:api": "cd api && bun run dev",
-    "dev:frontend": "cd frontend && bun run dev"
+    "dev:frontend": "cd frontend && bun run dev",
+    "tail:api:staging": "cd api && bunx wrangler tail --env staging",
+    "tail:api:prod": "cd api && bunx wrangler tail --env prod"
   },
   "devDependencies": {
     "bun": "^1.1.29",
