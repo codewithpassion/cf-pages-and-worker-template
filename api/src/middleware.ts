@@ -24,6 +24,11 @@ const secretsMiddleware = createMiddleware(async (c, next) => {
 })
 
 const emailSenderMiddleware = createMiddleware(async (c, next) => {
+    console.log("Setting up email sender middleware ", {
+        apiKey: c.env.RESEND_API_KEY.length > 0 ? 'exists' : 'does not exist',
+        from: c.env.RESEND_FROM_EMAIL,
+        to: c.env.RESEND_TO_EMAIL,
+    })
     c.set('emailSender', new EmailSender({
         apiKey: c.env.RESEND_API_KEY,
         from: c.env.RESEND_FROM_EMAIL,
