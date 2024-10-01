@@ -10,6 +10,7 @@ import { DashboardLayout, InventoryPage } from "@/components/dashboard.layout";
 import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
 import { Login } from "./login";
 import { AuthProvider } from "@/components/AuthProvider";
+import { LoginValidate } from "./login.validating";
 
 /**
  * Application routes
@@ -53,7 +54,11 @@ export const router = createRouter([
     ],
   },
   {
-    element: <BlankLayout />,
+    element: (
+      <AuthProvider isLogin>
+        <BlankLayout />
+      </AuthProvider>
+    ),
     errorElement: <RootError />,
     children: [
       {

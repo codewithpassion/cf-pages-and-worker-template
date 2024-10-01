@@ -2,11 +2,60 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Image } from "@/components/ui/image";
+import { useAuth } from "@/components/AuthProvider";
+import { Ref, useRef, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { LoginValidating } from "./login.validating";
 
 export const description =
   "A login page with two columns. The first column has the login form with email and password. There's a Forgot your passwork link and a link to sign up if you do not have an account. The second column has a cover image.";
 
 export function Login() {
+  const email: Ref<HTMLInputElement> = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [invalid, setInvalid] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [token, setToken] = useState("");
+  const [validating, setValidating] = useState(false);
+
+  const { login, isAuthenticated, navigate } = useAuth();
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const searchToken = searchParams.get("token");
+    if (searchToken) {
+      console.log("token", searchToken);
+      setToken(searchToken);
+      setValidating(true);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log("#######################");
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const onLogin = async () => {
+    if (email?.current?.value) {
+      try {
+        setLoading(true);
+        setInvalid(false);
+        const res = await login(email.current.value);
+        if (res.ok) {
+          setLoginSuccess(true);
+        } else {
+          setInvalid(true);
+          email.current.select();
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
@@ -24,7 +73,9 @@ export function Login() {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
+                defaultValue="dominik@portcity-ai.com"
                 required
+                ref={email}
               />
             </div>
             {/* <div className="grid gap-2">
@@ -39,7 +90,12 @@ export function Login() {
               </div>
               <Input id="password" type="password" required />
             </div> */}
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full"
+              onClick={onLogin}
+              disabled={loading}
+            >
               Login
             </Button>
             {/* <Button variant="outline" className="w-full">
@@ -47,6 +103,12 @@ export function Login() {
             </Button> */}
           </div>
           <div className="mt-4 text-center text-sm">
+            {loginSuccess && (
+              <p className="text-green-500 text-xl font-semibold">
+                Success, please check your email!
+              </p>
+            )}
+            {invalid && <p className="text-red-500 text-xl">Invalid login!</p>}
             {/* Don&apos;t have an account?{" "}
             <Link href="#" className="underline">
               Sign up
@@ -54,6 +116,7 @@ export function Login() {
           </div>
         </div>
       </div>
+      <LoginValidating open={validating} token={token} />
       <div className="hidden bg-muted lg:block">
         <Image
           src="https://placehold.co/1920x1080?text=L"

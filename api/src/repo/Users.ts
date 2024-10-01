@@ -15,13 +15,13 @@ export class UsersRepo extends BaseRepository<User> {
     return [
       {
         id: 'dominik@portcity-ai.com',
-        role: 'admin',
+        role: 'super-admin',
         isActivated: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         name: 'Dom',
         email: 'dominik@portcity-ai.com'
-      }
+      } as User
     ];
   }
 

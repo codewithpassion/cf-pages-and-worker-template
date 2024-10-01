@@ -21,6 +21,12 @@ export type HonoAppType = {
 }
 
 
+export type MagicLinkToken = {
+  token: string;
+  email: string;
+  expiresAt: Date;
+}
+
 export type User = {
   id: string;
   name: string;
@@ -32,13 +38,17 @@ export type User = {
   isActivated: boolean;
   createdAt: string;
   updatedAt: string;
-
 }
 
+
+export type AuthOptions = "otp" | "magic-link";
 export type Project = {
   id: string;
   name: string;
   description: string;
-  admins: User[];
-  members: User[];
+  admins: string[];
+  members: string[];
+  magicLinkValiditySeconds: number;
+  redirectUrl: string;
+  authOptions: AuthOptions[];
 }

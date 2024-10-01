@@ -1,6 +1,6 @@
 import { R2Bucket } from '@cloudflare/workers-types';
 
-export class BaseRepository<T extends { id: string }> {
+export abstract class BaseRepository<T extends {}> {
   private key: string;
   private bucket: R2Bucket;
 
@@ -12,6 +12,8 @@ export class BaseRepository<T extends { id: string }> {
   protected getDefaults(): T[] {
     return [];
   }
+
+  protected abstract getItemKey(item: T): string;
 
   private async getData(): Promise<T[]> {
     const object = await this.bucket.get(this.key);
@@ -35,14 +37,14 @@ export class BaseRepository<T extends { id: string }> {
     return item;
   }
 
-  async read(id: string): Promise<T | null> {
+  async getByKey(key: string): Promise<T | null> {
     const data = await this.getData();
-    return data.find(item => item.id === id) || null;
+    return data.find(item => this.getItemKey(item) === key) || null;
   }
 
-  async update(id: string, updatedItem: Partial<T>): Promise<T | null> {
+  async update(key: string, updatedItem: Partial<T>): Promise<T | null> {
     const data = await this.getData();
-    const index = data.findIndex(item => item.id === id);
+    const index = data.findIndex(item => this.getItemKey(item) === key);
     if (index === -1) return null;
 
     data[index] = { ...data[index], ...updatedItem };
@@ -50,9 +52,9 @@ export class BaseRepository<T extends { id: string }> {
     return data[index];
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(key: string): Promise<boolean> {
     const data = await this.getData();
-    const filteredData = data.filter(item => item.id !== id);
+    const filteredData = data.filter(item => this.getItemKey(item) !== key);
     if (filteredData.length === data.length) return false;
 
     await this.saveData(filteredData);
@@ -61,7 +63,7 @@ export class BaseRepository<T extends { id: string }> {
 
   async create_update(item: T): Promise<T> {
     const data = await this.getData();
-    const index = data.findIndex(existingItem => existingItem.id === item.id);
+    const index = data.findIndex(existingItem => this.getItemKey(existingItem) === this.getItemKey(item));
 
     if (index === -1) {
       // Item doesn't exist, create new

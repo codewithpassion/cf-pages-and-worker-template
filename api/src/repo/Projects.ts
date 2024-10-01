@@ -6,7 +6,21 @@ export class Projects extends BaseRepository<Project> {
     super('projects.json', bucket);
   }
 
-  protected getItemKey(project: Project): string {
-    return project.name;
+  protected override getItemKey(project: Project): string {
+    return project.id;
+  }
+  override getDefaults(): Project[] {
+    return [
+      {
+        id: 'auth',
+        name: 'Auth',
+        description: 'Authentication',
+        admins: ['dominik@portcity-ai.com'],
+        members: [],
+        magicLinkValiditySeconds: 600,
+        redirectUrl: 'https://heimdall.portcity-ai.com',
+        authOptions: ['magic-link'],
+      } as Project,
+    ];
   }
 }

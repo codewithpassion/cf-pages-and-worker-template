@@ -32,7 +32,6 @@ function NavigationItems({
   className: (isActive: boolean) => string;
 }) {
   const location = useLocation();
-  console.log(router?.routes[0].children);
   const navigationItems = router?.routes[0].children?.filter(
     (route) => route.handle
   );
@@ -60,12 +59,12 @@ function NavigationItems({
   });
 }
 export function DashboardLayout() {
-  const { isAuthenticated, navigate } = useAuth();
+  const { isAuthenticated, loading, navigate } = useAuth();
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !loading) {
       navigate("/login");
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, loading, navigate]);
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -131,6 +130,7 @@ export function Sidebar() {
 }
 
 export function Header() {
+  const { logout } = useAuth();
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -193,7 +193,7 @@ export function Header() {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
