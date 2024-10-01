@@ -146,7 +146,7 @@ app.post('/magic', async (c) => {
     const refreshToken = await setupRefreshToken(user, c, repo);
     await magicLinksRepo.delete(token)
 
-    return c.json({ accessToken, refreshToken })
+    return c.json({ accessToken, refreshToken, user: { name: user.name, email: user.email, role: user.role } })
 
   } catch (error) {
     console.error("Unauthorized", error)
@@ -188,13 +188,20 @@ app.post('/verify', async (c) => {
 
   try {
     const payload = await verify(accessToken, c.get('jwtSecret'))
+
+    console.log("Payload", payload)
+
     if ((payload as any).type !== 'access') {
       return c.json({ error: 'Invalid token type' }, 401)
     }
+    const email = (payload as any).sub
+    const userRepo = new UsersRepo(c.env.HEIMDALL_BUCKET)
+    const user = await userRepo.getByKey(email)
+    if (!user) return c.json({ error: 'Unauthorized' }, 401)
 
-    const newAccessToken = await getAccessToken(payload as any, c)
+    const newAccessToken = await getAccessToken(user, c)
 
-    return c.json({ ok: true, payload, accessToken: newAccessToken })
+    return c.json({ ok: true, accessToken: newAccessToken, user: { name: user.name, email: user.email, role: user.role } })
   } catch (error) {
     console.error('Error', error)
     return c.json({ error: 'Invalid token' }, 401)
@@ -228,7 +235,7 @@ app.post('/refresh', async (c) => {
     const newAccessToken = await getAccessToken(user, c);
     const newRefreshToken = await setupRefreshToken(user, c, userRepo);
 
-    return c.json({ accessToken: newAccessToken, refreshToken: newRefreshToken })
+    return c.json({ accessToken: newAccessToken, refreshToken: newRefreshToken, user: { name: user.name, email: user.email, role: user.role } })
   } catch (error) {
     return c.json({ error: 'Unauthorized' }, 401)
   }

@@ -130,7 +130,7 @@ export function Sidebar() {
 }
 
 export function Header() {
-  const { logout } = useAuth();
+  const { logout, authenticatedUser } = useAuth();
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -190,9 +190,13 @@ export function Header() {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuLabel className="font-light">
+            {authenticatedUser?.email || "unknown"}
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          {/* <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuSeparator /> */}
           <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

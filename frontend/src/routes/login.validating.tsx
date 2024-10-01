@@ -17,7 +17,7 @@ export function LoginValidating({
   token: string | null;
 }) {
   const isValidating = useRef(false);
-  const { validateToken } = useAuth();
+  const { validateMagicToken } = useAuth();
   const [invalid, setInvalid] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function LoginValidating({
       console.log("Validating token", token);
       isValidating.current = true;
 
-      validateToken(token).then((res) => {
+      validateMagicToken(token).then((res) => {
         if (res.ok) {
           console.log("Token validated");
           setInvalid(false);
@@ -35,7 +35,7 @@ export function LoginValidating({
         }
       });
     }
-  }, [token, open, validateToken]);
+  }, [token, open, validateMagicToken]);
 
   return (
     <Dialog open={open} modal>
