@@ -15,16 +15,6 @@ import { Login } from "./login";
  */
 export const router = createRouter([
   {
-    element: <BlankLayout />,
-    errorElement: <RootError />,
-    children: [
-      {
-        path: "/login",
-        element: <Login />,
-      },
-    ],
-  },
-  {
     path: "/",
     element: <DashboardLayout />,
     errorElement: <RootError />,
@@ -53,6 +43,16 @@ export const router = createRouter([
         path: "analytics",
         element: <InventoryPage />,
         handle: { label: "Analytics", icon: LineChart },
+      },
+    ],
+  },
+  {
+    element: <BlankLayout />,
+    errorElement: <RootError />,
+    children: [
+      {
+        path: "/login",
+        element: <Login />,
       },
     ],
   },
