@@ -79,10 +79,9 @@ export function Login() {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
-                defaultValue=""
+                defaultValue={emailAddress}
                 required
                 ref={email}
-                value={emailAddress}
               />
             </div>
             {/* <div className="grid gap-2">
