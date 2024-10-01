@@ -1,4 +1,8 @@
-import React, { ForwardRefExoticComponent, RefAttributes } from "react";
+import React, {
+  ForwardRefExoticComponent,
+  RefAttributes,
+  useEffect,
+} from "react";
 import { Outlet, Link, NavLink, useLocation } from "react-router-dom";
 import { CircleUser, Menu, Package2, Lock, LucideProps } from "lucide-react";
 
@@ -16,6 +20,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { router } from "@/routes";
 import { APP_NAME } from "@/data/constants";
 import { SearchBox } from "./search-box";
+import { useAuth } from "./AuthProvider";
 
 type IconType = ForwardRefExoticComponent<
   Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
@@ -55,15 +60,26 @@ function NavigationItems({
   });
 }
 export function DashboardLayout() {
+  const { isAuthenticated, navigate } = useAuth();
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <Sidebar />
-      <div className="flex flex-col">
-        <Header />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Outlet />
-        </main>
-      </div>
+      {isAuthenticated && (
+        <>
+          <Sidebar />
+          <div className="flex flex-col">
+            <Header />
+            <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+              <Outlet />
+            </main>
+          </div>
+        </>
+      )}
     </div>
   );
 }

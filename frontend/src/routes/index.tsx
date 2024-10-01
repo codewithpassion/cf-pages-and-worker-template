@@ -1,5 +1,6 @@
 import { createElement } from "react";
 import {
+  BrowserRouter,
   createBrowserRouter as createRouter,
   RouterProvider,
 } from "react-router-dom";
@@ -8,6 +9,7 @@ import { DashboardLayout, InventoryPage } from "@/components/dashboard.layout";
 
 import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
 import { Login } from "./login";
+import { AuthProvider } from "@/components/AuthProvider";
 
 /**
  * Application routes
@@ -16,7 +18,11 @@ import { Login } from "./login";
 export const router = createRouter([
   {
     path: "/",
-    element: <DashboardLayout />,
+    element: (
+      <AuthProvider>
+        <DashboardLayout />
+      </AuthProvider>
+    ),
     errorElement: <RootError />,
     children: [
       {
