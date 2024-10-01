@@ -3,7 +3,7 @@ import {
   createBrowserRouter as createRouter,
   RouterProvider,
 } from "react-router-dom";
-import { BaseLayout, BlankLayout, RootError } from "../components";
+import { BlankLayout, RootError } from "../components";
 import { DashboardLayout, InventoryPage } from "@/components/dashboard.layout";
 
 import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";

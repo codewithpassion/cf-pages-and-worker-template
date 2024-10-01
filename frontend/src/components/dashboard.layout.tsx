@@ -1,13 +1,6 @@
 import React, { ForwardRefExoticComponent, RefAttributes } from "react";
 import { Outlet, Link, NavLink, useLocation } from "react-router-dom";
-import {
-  Bell,
-  CircleUser,
-  Menu,
-  Package2,
-  Lock,
-  LucideProps,
-} from "lucide-react";
+import { CircleUser, Menu, Package2, Lock, LucideProps } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
