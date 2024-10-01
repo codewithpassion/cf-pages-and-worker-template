@@ -1,19 +1,18 @@
 import { createElement } from "react";
-import { createHashRouter, RouterProvider } from "react-router-dom";
 import {
-  BaseLayout,
-  BlankLayout,
-  LandingPageLayout,
-  MainLayout,
-  RootError,
-} from "../components";
+  createBrowserRouter as createRouter,
+  RouterProvider,
+} from "react-router-dom";
+import { RootError } from "../components";
 import { DashboardLayout, InventoryPage } from "@/components/dashboard.layout";
+
+import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
 
 /**
  * Application routes
  * https://reactrouter.com/en/main/routers/create-browser-router
  */
-export const router = createHashRouter([
+export const router = createRouter([
   {
     path: "/",
     element: <DashboardLayout />,
@@ -22,40 +21,30 @@ export const router = createHashRouter([
       {
         index: true,
         element: <InventoryPage />,
+        handle: { label: "Dashboard", icon: Home },
+      },
+      {
+        path: "orders",
+        element: <InventoryPage />,
+        handle: { label: "Orders", icon: ShoppingCart, badge: "6" },
       },
       {
         path: "inventory",
         element: <InventoryPage />,
+        handle: { label: "Inventory", icon: Package },
       },
-      // Add more routes for other pages (orders, products, customers, analytics)
+      {
+        path: "customers",
+        element: <InventoryPage />,
+        handle: { label: "Customers", icon: Users },
+      },
+      {
+        path: "analytics",
+        element: <InventoryPage />,
+        handle: { label: "Analytics", icon: LineChart },
+      },
     ],
   },
-  // {
-  //   path: "",
-  //   element: <BaseLayout />,
-  //   errorElement: <RootError />,
-  //   children: [],
-  // },
-  // {
-  //   path: "",
-  //   element: <MainLayout />,
-  //   errorElement: <RootError />,
-  //   children: [{ index: true, lazy: () => import("./start") }],
-  // },
-  // {
-  //   path: "",
-  //   element: <LandingPageLayout />,
-  //   errorElement: <RootError />,
-  //   children: [],
-  // },
-  // {
-  //   path: "",
-  //   element: <BlankLayout />,
-  //   errorElement: <RootError />,
-  //   children: [
-  //     { index: false, path: "dashboard", lazy: () => import("./dashboard") },
-  //   ],
-  // },
 ]);
 
 export function Router(): JSX.Element {
