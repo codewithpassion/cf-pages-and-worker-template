@@ -17,6 +17,7 @@ export function Login() {
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [token, setToken] = useState("");
   const [validating, setValidating] = useState(false);
+  const [emailAddress, setEmailAddress] = useState("");
 
   const { login, isAuthenticated, navigate } = useAuth();
 
@@ -33,8 +34,12 @@ export function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log("#######################");
       navigate("/");
+    } else {
+      const savedEmail = localStorage.getItem("userEmail");
+      if (savedEmail) {
+        setEmailAddress(savedEmail);
+      }
     }
   }, [isAuthenticated, navigate]);
 
@@ -46,6 +51,7 @@ export function Login() {
         const res = await login(email.current.value);
         if (res.ok) {
           setLoginSuccess(true);
+          localStorage.setItem("userEmail", email.current.value);
         } else {
           setInvalid(true);
           email.current.select();
@@ -73,9 +79,10 @@ export function Login() {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
-                defaultValue="dominik@portcity-ai.com"
+                defaultValue=""
                 required
                 ref={email}
+                value={emailAddress}
               />
             </div>
             {/* <div className="grid gap-2">
