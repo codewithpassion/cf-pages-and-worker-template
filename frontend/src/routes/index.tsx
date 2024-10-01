@@ -3,16 +3,27 @@ import {
   createBrowserRouter as createRouter,
   RouterProvider,
 } from "react-router-dom";
-import { RootError } from "../components";
+import { BaseLayout, BlankLayout, RootError } from "../components";
 import { DashboardLayout, InventoryPage } from "@/components/dashboard.layout";
 
 import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
+import { Login } from "./login";
 
 /**
  * Application routes
  * https://reactrouter.com/en/main/routers/create-browser-router
  */
 export const router = createRouter([
+  {
+    element: <BlankLayout />,
+    errorElement: <RootError />,
+    children: [
+      {
+        path: "/login",
+        element: <Login />,
+      },
+    ],
+  },
   {
     path: "/",
     element: <DashboardLayout />,
